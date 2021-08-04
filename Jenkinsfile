@@ -1,65 +1,39 @@
-
 pipeline {
-
-    parameters {
-        string(name: 'environment', defaultValue: 'terraform', description: 'Workspace/environment file to use for deployment')
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
-
+    agent any
+    
+    tools {
+        terraform 'terraform'
     }
-
-
-     environment {
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-    }
-
-   agent  any
-        options {
-                timestamps ()
-                ansiColor('xterm')
-            }
     stages {
-        stage('checkout') {
+        stage ("checkout from GIT") {
             steps {
-                 script{
-                        dir("terraform")
-                        {
-                            git "https://github.com/Sarankumar-S/infra-repo.git"
-                        }
-                    }
-                }
-            }
-
-        stage('Plan') {
-            steps {
-                sh 'pwd;cd terraform/ec2; terraform init -input=false'
-                sh 'pwd;cd terraform/ec2; terraform workspace new ${environment}'
-                sh 'pwd;cd terraform/ec2 ; terraform workspace select ${environment}'
-                sh "pwd;cd terraform/ec2 ;terraform plan -input=false -out tfplan "
-                sh 'pwd;cd terraform/ec2 ;terraform show -no-color tfplan > tfplan.txt'
+                git branch: 'main', credentialsId: 'cde06f21-9ae7-4081-a549-f7bdb515dc6f', url: 'https://github.com/codepipe/tff.git'
             }
         }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-           }
-
-           steps {
-               script {
-                    def plan = readFile 'terraform/ec2/tfplan.txt'
-                    input message: "Do you want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
-
-        stage('Apply') {
+        stage ("terraform init") {
             steps {
-                sh "pwd;cd terraform/ec2 ; terraform apply -input=false tfplan"
+                sh 'terraform init'
+            }
+        }
+        stage ("terraform fmt") {
+            steps {
+                sh 'terraform fmt'
+            }
+        }
+        stage ("terraform validate") {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+        stage ("terrafrom plan") {
+            steps {
+                sh 'terraform plan '
+            }
+        }
+        stage ("terraform apply") {
+            steps {
+                sh 'terraform apply --auto-approve'
             }
         }
     }
-
-  }
+}
