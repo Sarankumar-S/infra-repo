@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage ("checkout from GIT") {
             steps {
-                git "https://github.com/Sarankumar-S/infra-repo.git"
+                git "https://github.com/Sarankumar-S/infra-repo.git" --BRANCH_NAME "main"
             }
         }
         stage ("terraform init") {
