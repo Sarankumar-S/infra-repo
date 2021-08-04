@@ -8,7 +8,7 @@ pipeline {
         stage ("checkout from GIT") {
             steps {
                  git "https://github.com/Sarankumar-S/infra-repo.git"
-                 git branch 'main',  url "https://github.com/Sarankumar-S/infra-repo.git"
+                 git branch 'main',url "https://github.com/Sarankumar-S/infra-repo.git"
                  
             }
         }
