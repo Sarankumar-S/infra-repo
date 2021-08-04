@@ -7,6 +7,6 @@ resource "aws_instance" "devops"{
   instance_type = "t2.micro"
 
   tags = {
-    Name = "DevOpsInstance"
+    Name = "Devopstest"
     }
   }
