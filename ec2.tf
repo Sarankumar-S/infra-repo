@@ -1,7 +1,6 @@
-provider "aws"
-{
-  profile = "default"
+provider "aws"{
   region = "ap-south-1"
+  version = "~> 2.0"
 } 
 
 resource "aws_instance" "devops"{
