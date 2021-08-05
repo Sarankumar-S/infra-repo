@@ -3,10 +3,10 @@ provider "aws"{
 } 
 
 resource "aws_instance" "devops"{
-  ami           = "ami-0912f71e06545ad88"
+  ami           = "ami-06a0b4e3b7eb7a300"
   instance_type = "t2.micro"
 
   tags = {
-    Name = "Devopstest"
+    Name = "Devopstestnewec2"
     }
   }
