@@ -4,6 +4,6 @@ resource "aws_instance" "devops"{
   key_name = "checkkp"
 
   tags = {
-    Name = "demoec21"
+    Name = "terraform"
     }
   }
